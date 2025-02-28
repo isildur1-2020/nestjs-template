@@ -1,0 +1,40 @@
+services:
+  backend_app:
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
+      args:
+        NODE_IMAGE_VERSION: ${NODE_IMAGE_VERSION}
+        PORT: ${PORT}
+    image: backend_app
+    container_name: backend_app
+    volumes:
+      - ./:/app/
+      - /app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      PORT: ${PORT}
+
+  postgres:
+    image: ${POSTGRES_VERSION}
+    restart: unless-stopped
+    container_name: postgres
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      retries: 5
+      start_period: 5s
