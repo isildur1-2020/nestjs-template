@@ -38,11 +38,21 @@ $ pnpm install
 # development
 $ pnpm run start
 
+# development with docker
+$ pnpm run docker:up
+
 # watch mode
 $ pnpm run start:dev
 
 # production mode
 $ pnpm run start:prod
+```
+
+## Unmount development with docker
+
+```bash
+# Remove containers and images
+$ pnpm run docker:down
 ```
 
 ## Run tests
